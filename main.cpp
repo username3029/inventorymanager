@@ -2,6 +2,7 @@
 #include "models.h"  // Include data model definitions
 #include "utils.h"   // Include utility functions
 #include "status.h"  // Include status definitions
+#include "display.h" // Include display functions
 
 int main() {
     clear_console();

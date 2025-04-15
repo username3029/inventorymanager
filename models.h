@@ -17,5 +17,8 @@ struct Category {
     std::vector<Item> items;    // List of items in this category
 };
 
+// Declared the categories vector
+extern vector<Category> categories;
+
 #endif // MODELS_H
 
