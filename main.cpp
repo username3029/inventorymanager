@@ -3,6 +3,7 @@
 #include "utils.h"   // Include utility functions
 #include "status.h"  // Include status definitions
 #include "display.h" // Include display functions
+#include "category_actions.h" // Include category actions
 
 int main() {
     clear_console();
