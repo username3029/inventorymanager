@@ -95,4 +95,25 @@ void add_item_to_category(Category &category) {
     }
 }
 
+/**
+ * Removes an item from the specified category by its index.
+ */
+void remove_item_from_category(Category &category) {
+    if (category.items.empty()) {                     // Check if category is empty
+        write_line("[No items to remove.]");
+        return;
+    }
+
+    write_line("\n--- Remove Item ---");
+    int item_no = read_integer_range(                 // Prompt user for item number within valid range
+        "- Enter Item No.: ", 1, category.items.size());
+    int index = item_no - 1;                          // Convert to 0-based index
+
+    string removed_name = category.items[index].name; // Store item name before removal (for message)
+    category.items.erase(category.items.begin() + index); // Remove item from vector
+
+    write_line("[Removed: " + removed_name + "]");    // Confirm deletion to user
+}
+
 #endif // CATEGORY_ACTIONS_H
+
