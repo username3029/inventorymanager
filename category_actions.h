@@ -6,6 +6,7 @@
 #include "utils.h"
 
 using std::string;
+using std::to_string;
 
 /**
  * Adds a new category to the global list.
@@ -115,37 +116,36 @@ void remove_item_from_category(Category &category) {
     write_line("[Removed: " + removed_name + "]");    // Confirm deletion to user
 }
 
-/**
- * Updates the quantity of an item, ensuring it stays within capacity bounds.
- */
-void change_item_quantity(Category &category) {
+void change_item_capacity(Category &category) {
     if (category.items.empty()) {
-        write_line("[No items to modify.]");          // No items to update
+        write_line("[No items to modify.]"); // Exit if no items
         return;
     }
 
-    write_line("\n--- Change Quantity ---");
-    int item_no = read_integer_range(
-        "- Enter Item No.: ", 1, category.items.size());
-    int index = item_no - 1;
+    write_line("\n--- Change Capacity ---");
+    int item_no = read_integer_range("- Enter Item No.: ", 1, category.items.size()); // Select item
+    int index = item_no - 1; // Convert to index
+    Item &item = category.items[index]; // Reference the item
 
-    Item &item = category.items[index];               // Reference the item directly
+    int new_capacity = -1;
+    while (new_capacity <= 0) {
+        new_capacity = read_integer("- Enter New Capacity: "); // Prompt user
 
-    int new_quantity = -1;
-    while (new_quantity < 0 || new_quantity > item.capacity) {
-        new_quantity = read_integer("- Enter New Quantity: "); // Ask for new quantity
-
-        if (new_quantity < 0)
-            write_line("Quantity cannot be negative.");        // Reject negative values
-        if (new_quantity > item.capacity)
-            write_line("Quantity cannot exceed capacity (" +
-                       std::to_string(item.capacity) + ").");  // Don't allow exceeding capacity
+        if (new_capacity <= 0) {
+            write_line("Capacity must be positive."); // Reject invalid input
+        }
     }
 
-    item.quantity = new_quantity;                     // Save valid new quantity
-    write_line("[Updated: " + item.name + " now " +
-               std::to_string(item.quantity) + "/" +
-               std::to_string(item.capacity) + "]");
+    if (item.quantity > new_capacity) {
+        // If current quantity is above new capacity, adjust it
+        write_line("[Warning: Current quantity (" + to_string(item.quantity) +
+                   ") exceeds new capacity (" + to_string(new_capacity) + "). Adjusting quantity.]");
+        item.quantity = new_capacity; // Auto-adjust to fit new capacity
+    }
+
+    item.capacity = new_capacity; // Save updated capacity
+    write_line("[Updated: " + item.name + " now " + to_string(item.quantity) +
+               "/" + std::to_string(item.capacity) + "]");
 }
 
 
