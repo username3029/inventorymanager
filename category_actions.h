@@ -115,5 +115,39 @@ void remove_item_from_category(Category &category) {
     write_line("[Removed: " + removed_name + "]");    // Confirm deletion to user
 }
 
+/**
+ * Updates the quantity of an item, ensuring it stays within capacity bounds.
+ */
+void change_item_quantity(Category &category) {
+    if (category.items.empty()) {
+        write_line("[No items to modify.]");          // No items to update
+        return;
+    }
+
+    write_line("\n--- Change Quantity ---");
+    int item_no = read_integer_range(
+        "- Enter Item No.: ", 1, category.items.size());
+    int index = item_no - 1;
+
+    Item &item = category.items[index];               // Reference the item directly
+
+    int new_quantity = -1;
+    while (new_quantity < 0 || new_quantity > item.capacity) {
+        new_quantity = read_integer("- Enter New Quantity: "); // Ask for new quantity
+
+        if (new_quantity < 0)
+            write_line("Quantity cannot be negative.");        // Reject negative values
+        if (new_quantity > item.capacity)
+            write_line("Quantity cannot exceed capacity (" +
+                       std::to_string(item.capacity) + ").");  // Don't allow exceeding capacity
+    }
+
+    item.quantity = new_quantity;                     // Save valid new quantity
+    write_line("[Updated: " + item.name + " now " +
+               std::to_string(item.quantity) + "/" +
+               std::to_string(item.capacity) + "]");
+}
+
+
 #endif // CATEGORY_ACTIONS_H
 
