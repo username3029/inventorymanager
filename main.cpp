@@ -5,6 +5,9 @@
 #include "display.h" // Include display functions
 #include "category_actions.h" // Include category actions
 
+// Global definition of the categories vector
+std::vector<Category> categories; 
+
 int main() {
     clear_console();
 
