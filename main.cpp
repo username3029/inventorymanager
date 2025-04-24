@@ -43,3 +43,49 @@ void view_category(int category_index) {
         }
     }
 };
+
+// Main function to run the inventory management system
+
+int main() {
+    bool running = true;
+    while (running) {
+        display_main_menu(); // From display.h
+        std::string input_line = read_line();
+
+        if (input_line.length() == 1) {
+            char char_choice = toupper(input_line[0]);
+            if (char_choice == 'C') {
+                add_new_category(); // From category_actions.h
+                continue;
+            } else if (char_choice == 'X') {
+                running = false;
+                continue;
+            }
+        }
+
+        // Try to convert to integer for category selection
+        if (is_integer(input_line)) { // 
+            int choice_num = convert_to_integer(input_line); 
+            if (choice_num >= 1 && choice_num <= categories.size()) {
+                view_category(choice_num - 1); // Call our view_category function
+            } else {
+                // Handles numbers out of valid category range
+                write_line("Invalid category number. Please try again.");
+                delay(1000); 
+            }
+        } else {
+            // Handles input that isn't 'C', 'X', or a valid integer choice
+            // This condition ensures I don't double-print "Invalid choice"
+            // if it was a single char that wasn't 'C' or 'X'.
+            if (!(input_line.length() == 1 && (toupper(input_line[0]) == 'C' || toupper(input_line[0]) == 'X'))) {
+                 write_line("Invalid choice. Please try again.");
+                 delay(1000);
+            }
+        }
+    }
+
+    clear_console(); // From utils.h
+    write_line("Exiting Inventory Tracking System. Goodbye!");
+
+    return 0;
+}
