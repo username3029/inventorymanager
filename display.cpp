@@ -1,19 +1,25 @@
 #include "display.h"
-#include "splashkit.h"      
-#include "models.h"         // For Category, Item, and global 'categories' vector
-#include "status.h"         // For get_stock_status, MY_COLOR_RESET
-#include "utils.h"          // For clear_console
-#include <string>           // For std::string, std::to_string
-#include <vector>           // For std::vector (used with categories.items)
+#include "splashkit.h"
+#include "models.h"
+#include "status.h"
+#include "utils.h"
+#include <string>
+#include <vector>
+// iostream not strictly needed if using splashkit I/O consistently
 
-
+/**
+ * @brief the main menu of the inventory tracking system.
+ * Lists available categories or a message if none exist.
+ * Provides options to create a new category or exit.
+ */
 void display_main_menu() {
-    clear_console();
+    clear_console(); // Clear console for a fresh screen
     write_line("=== Inventory Tracking System ===");
 
-    if (categories.empty()) { // Accessing global 'categories'
+    if (categories.empty()) { // Accessing global 'categories' from models.h (via main.cpp definition)
         write_line("(No categories available)");
     } else {
+        // List each category with a number
         for (int i = 0; i < categories.size(); ++i) {
             write_line(std::to_string(i + 1) + ". " + categories[i].name);
         }
@@ -25,8 +31,14 @@ void display_main_menu() {
     write("Enter your choice: ");
 }
 
+/**
+ * @brief Displays the menu for a specific category.
+ * Shows a table of items with their stock status (quantity/capacity and level).
+ * Provides options to manage items within the category.
+ * @param category A reference to the Category object to display.
+ */
 void display_category_menu(Category &category) {
-    clear_console();
+    clear_console(); // Clear screen for neat display
     write_line("=== Category: " + category.name + " ===");
     write_line("---------------------------------------------");
     write_line("| Item No. | Name      | Stock Status      |");
@@ -37,20 +49,27 @@ void display_category_menu(Category &category) {
     } else {
         for (int i = 0; i < category.items.size(); ++i) {
             Item &item = category.items[i];
-            auto status = get_stock_status(item.quantity, item.capacity);
-            std::string status_str = std::to_string(item.quantity) + "/" + std::to_string(item.capacity) + " " + status.second;
 
+            // Get color + status text from status.h/cpp
+            auto status_info = get_stock_status(item.quantity, item.capacity);
+            std::string status_str = std::to_string(item.quantity) + "/" + std::to_string(item.capacity) + " " + status_info.second;
+
+            // Format the table row with alignment
             std::string line = "| ";
             line += std::to_string(i + 1);
-            line += std::string(9 - std::to_string(i + 1).length(), ' '); // Use std::string for constructor
+            line += std::string(9 - std::to_string(i + 1).length(), ' '); // Padding for Item No.
             line += "| ";
             line += item.name;
-            line += std::string(10 - item.name.length(), ' '); // Use std::string for constructor
+            line += std::string(10 - item.name.length(), ' ');            // Padding for Name
             line += "| ";
-            line += status.first;
+            line += status_info.first; // Apply color
             line += status_str;
-            line += std::string(18 - status_str.length(), ' '); // Use std::string for constructor
-            line += MY_COLOR_RESET;
+            // Padding for Stock Status, accounting for color codes not taking visible space
+            // This calculation might need adjustment if color codes affect perceived length for padding.
+            
+            int visible_status_str_length = status_str.length();
+            line += std::string(18 - visible_status_str_length, ' ');
+            line += MY_COLOR_RESET; // Reset color
             line += "|";
             write_line(line);
         }
