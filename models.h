@@ -18,7 +18,7 @@ struct Category {
 };
 
 // Declared the categories vector
-extern vector<Category> categories;
+extern std::vector<Category> categories; 
 
 #endif // MODELS_H
 
