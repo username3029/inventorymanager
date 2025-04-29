@@ -47,6 +47,7 @@ void view_category(int category_index) {
 // Main function to run the inventory management system
 
 int main() {
+    clear_console();
     bool running = true;
     while (running) {
         display_main_menu(); // From display.h
@@ -54,10 +55,10 @@ int main() {
 
         if (input_line.length() == 1) {
             char char_choice = toupper(input_line[0]);
-            if (char_choice == 'C') {
-                add_new_category(); // From category_actions.h
-                continue;
-            } else if (char_choice == 'X') {
+            if (input_line == "C") {
+                add_new_category();
+                continue; // From category_actions.h
+            } else if (input_line == "X") {
                 running = false;
                 continue;
             }
